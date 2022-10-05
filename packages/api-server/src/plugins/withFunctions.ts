@@ -20,10 +20,6 @@ const withFunctions = async (
   await fastify.register(fastifyRawBody)
   const { configureFastify } = loadFastifyConfig()
 
-  if (configureFastify) {
-    await configureFastify(fastify, { side: 'api', ...options })
-  }
-
   fastify.all(`${apiRootPath}:routeName`, lambdaRequestHandler)
   fastify.all(`${apiRootPath}:routeName/*`, lambdaRequestHandler)
 
@@ -32,6 +28,10 @@ const withFunctions = async (
     { parseAs: 'string' },
     fastify.defaultTextParser
   )
+
+  if (configureFastify) {
+    await configureFastify(fastify, { side: 'api', ...options })
+  }
 
   await loadFunctionsFromDist()
 
